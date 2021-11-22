@@ -4,6 +4,7 @@ from . import views
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
+    path('all-notes/', views.all_notes, name='all-notes'),
     path('notes/', login_required(views.home), name='notes'),
     path('notes/search/', views.search_note, name='search_note'),
     path('notes/<slug:slug>/', login_required(views.get_note_details), name='note_detail'),

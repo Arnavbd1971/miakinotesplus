@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" type="text/css" media="all" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
     <link rel="stylesheet" href="{% static 'css/tagsinput.css' %}">
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
     <link rel="shortcut icon" href="{% static 'img/logo.png' %}">
@@ -95,7 +94,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-    <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
     <script src="{% static 'js/tagsinput.js' %}"></script>
     {% block javascript %}
     {% endblock %}
@@ -124,12 +122,14 @@
         $('.loader').hide();
 
         // Markdown Editor
-        var easyMDE = new EasyMDE({
-            autofocus: true,
-            autorefresh: true,
-            spellChecker: false,
-            minHeight: '180px'
-        });
+        // var easyMDE = new EasyMDE({
+        //     autofocus: true,
+        //     autorefresh: true,
+        //     spellChecker: false,
+        //     minHeight: '180px'
+        // });
+
+        // $("#id_note_content").emojioneArea();
 
         // datatable
         $('#all_notes').DataTable({

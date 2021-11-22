@@ -4,13 +4,34 @@
 <!-- {% load humanize %} -->
 {% block content %}
 <div class="container" style="margin-top: 20px; margin-bottom: 50px;">
-    <div class="card" style="width: 18rem;">
-        <div class="card-body">
-          <h5 class="card-title">Note title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <a href="#" class="card-link">Card link</a>
-          <a href="#" class="card-link">Another link</a>
-        </div>
-    </div>
+  <div class="row">
+    {% for note in all_notes %}
+        <!-- <div class="card col-md-4 " style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">Note title</h5>
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <a href="#" class="card-link">Card link</a>
+              <a href="#" class="card-link">Another link</a>
+            </div>
+        </div> -->
+          <div class="col-lg-4 col-md-6 col-sm-6">
+            <div class="service-item mb-4 container" style="background: #f4f9fc;">
+              <div class="icon d-flex align-items-center">
+                <i class="icofont-laboratory text-lg"></i>
+                <h4 class="mt-3 mb-3"><a href="{% url 'note_detail' note.slug %}">{{ note.note_title|truncatechars:30 }}</a></h4>
+              </div>
+              <p style="color: gray; font-size: 15px;">
+                Last Updated: {{ note.updated_at|naturaltime }} <i class="fa fa-info-circle" aria-hidden="true" data-html="true" data-toggle="tooltip" title="Updated at: {{ note.updated_at}} <br> Created at: {{ note.created_at }}"></i><br>
+              </p>
+              <p>Created By: {{ note.user.username }}</p> 
+              <div class="tag pb-3">
+                {% for tag in note.tags.all %}
+                  <a href="{% url 'get_all_notes_tags' tag.slug %}"><span class="badge badge-primary">{{ tag.name }}</span></a>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+    {% endfor %}
+  </div>
 </div>
 {% endblock %}

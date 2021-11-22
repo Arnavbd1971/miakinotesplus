@@ -15,6 +15,7 @@ import markdown.extensions.codehilite
 import markdown.extensions.tables
 import markdown.extensions.toc
 from django_cryptography.fields import encrypt
+from ckeditor.fields import RichTextField
 
 
 def generate_unique_slug(_class, field):
@@ -35,7 +36,7 @@ def generate_unique_slug(_class, field):
 class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     note_title = models.CharField(max_length=200)
-    note_content = encrypt(models.TextField(null=True, blank=True))
+    note_content = encrypt(RichTextField(null=True, blank=True))
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     slug = models.SlugField(max_length=200, unique=True)

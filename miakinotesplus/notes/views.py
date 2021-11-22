@@ -13,6 +13,13 @@ from xhtml2pdf import pisa
 from django.core.signing import BadSignature
 from taggit.models import Tag
 
+def all_notes(request):
+    all_notes = Note.objects.all().order_by('-updated_at')
+    context = {
+        'all_notes': all_notes,
+    }
+    return render(request, 'index.html', context)
+
 def home(request):
     if request.user.is_authenticated:
         notes = Note.objects.filter(user=request.user).order_by('-updated_at')[:10]
@@ -39,7 +46,11 @@ def home(request):
         }
         return render(request, 'notes.html', context)
     else:
-        return render(request, 'index.html')
+        all_notes = Note.objects.all().order_by('-updated_at')
+        context = {
+            'all_notes': all_notes,
+        }
+        return render(request, 'index.html', context)
 
 def link_callback(uri, rel):
     """
@@ -194,15 +205,19 @@ def get_shareable_link(request, signed_pk):
         raise Http404('No Order matches the given query.')
 
 def get_all_notes_tags(request, slug):
-    tag = get_object_or_404(Tag, slug=slug)
-    # Filter posts by tag name  
-    all_notes = Note.objects.filter(tags=tag, user=request.user)
-    notes = Note.objects.filter(user=request.user).order_by('-updated_at')[:10]
-    add_note_form = AddNoteForm()
-    context = {
-        'tag':tag,
-        'all_notes':all_notes,
-        'notes': notes,
-        'add_note_form': add_note_form
-    }
-    return render(request, 'tags.html', context)
+    if request.user.is_authenticated:
+        tag = get_object_or_404(Tag, slug=slug)
+        # Filter posts by tag name
+        all_notes = Note.objects.filter(tags=tag, user=request.user)
+        notes = Note.objects.filter(user=request.user).order_by('-updated_at')[:10]
+        add_note_form = AddNoteForm()
+        context = {
+            'tag':tag,
+            'all_notes':all_notes,
+            'notes': notes,
+            'add_note_form': add_note_form
+        }
+        return render(request, 'tags.html', context)
+    else:
+        messages.error(request, 'You are not authenticated to perform this action')
+        return redirect('notes')
