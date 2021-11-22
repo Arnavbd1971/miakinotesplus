@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'accounts',
     'notes',
     'ckeditor',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -77,6 +78,7 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = 'miakinotesplus.wsgi.application'
+ASGI_APPLICATION = 'miakinotesplus.asgi.application'
 
 
 # Database
@@ -125,7 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Dhaka'
 
 USE_I18N = True
 
@@ -150,4 +152,32 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 SUMMERNOTE_THEME = 'bs4'
 
-TIME_ZONE =  'Asia/Kolkata'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('127.0.0.1', 6379)],
+#         },
+#     },
+# }
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('172.0.0.1', 6379)],
+        },
+    },
+}
+
+# CELERY SETTINGS
+# CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+# CELERY_RESULT_BACKEND = 'django-db'
+# CELERY_ACCEPT_CONTENT = ['application/json']
+# CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_TASK_SELERLIZER = 'json'
+# CELERY_TIMEZONE = 'Asia/Dhaka'
+
+# CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'

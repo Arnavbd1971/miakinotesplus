@@ -44,6 +44,7 @@ def home(request):
             'all_notes': all_notes,
             'add_note_form': form,
             'script_name': request.META['SCRIPT_NAME'],
+            'room_name' : "broadcast"
         }
         return render(request, 'notes.html', context)
     else:
