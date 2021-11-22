@@ -39,10 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users',
-    'profiles',
+    'django.contrib.humanize',
+    'crispy_forms',
+    'taggit',
+    'accounts',
     'notes',
-    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -137,21 +138,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# Bootstrap Crispy-Forms config
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
+SUMMERNOTE_THEME = 'bs4'
 
-LOGIN_URL = 'login'
-LOGOUT_URL = 'logout'
-LOGIN_REDIRECT_URL = 'users:my_notes'
-LOGOUT_REDIRECT_URL = 'users:home'
-
-
-# Email backend
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+TIME_ZONE =  'Asia/Kolkata'

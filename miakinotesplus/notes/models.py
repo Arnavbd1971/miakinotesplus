@@ -39,7 +39,7 @@ class Note(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     slug = models.SlugField(max_length=200, unique=True)
-    # tags = TaggableManager(through=Note)
+    tags = TaggableManager()
     signer = Signer(salt='notes.Note')
 
     def get_message_as_markdown(self):
