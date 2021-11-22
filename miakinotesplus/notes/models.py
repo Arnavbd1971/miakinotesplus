@@ -19,11 +19,6 @@ from ckeditor.fields import RichTextField
 
 
 def generate_unique_slug(_class, field):
-    """
-        return unique slug if origin slug is exist.
-        eg: `foo-bar` => `foo-bar-1`
-        :param `field` is specific field for title.
-    """
     origin_slug = slugify(field)
     unique_slug = origin_slug
     numb = 1
@@ -84,3 +79,26 @@ class AddNoteForm(forms.ModelForm):
                 }
             ),
         }
+
+class Share(models.Model):
+    note = models.ForeignKey(Note, on_delete=models.CASCADE, null=True, blank=True)
+    user_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user2user', null=True, blank=True)
+    user_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    slug = models.SlugField(max_length=200, unique=True, default=0)
+    view_status = models.CharField(max_length=100, default='pendding')
+
+    def save(self, *args, **kwargs):
+        note = self.note
+        if self.slug:
+            if slugify(note) != self.slug:
+                self.slug = generate_unique_slug(Share, note)
+        else:
+            self.slug = generate_unique_slug(Share, note)
+        super(Share, self).save(*args, **kwargs)
+
+class ShareNoteForm(forms.ModelForm):
+    class Meta:
+        model = Share
+        fields = '__all__'
+        exclude = ['note', 'user_by', 'slug', 'view_status']

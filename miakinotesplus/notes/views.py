@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, Http404
-from .models import Note, AddNoteForm
+from .models import Note, AddNoteForm, Share, ShareNoteForm
 from django.contrib import messages
 import json, os
 from datetime import datetime, timedelta 
@@ -12,6 +12,7 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django.core.signing import BadSignature
 from taggit.models import Tag
+# from string import count
 
 def all_notes(request):
     all_notes = Note.objects.all().order_by('-updated_at')
@@ -121,11 +122,14 @@ def get_note_details(request, slug):
 
     absolute_url = request.build_absolute_uri(note.get_absolute_url())
 
+    share = Share.objects.filter(note = note)
+
     context = {
         'notes': notes,
         'note_detail': note,
         'add_note_form': add_note_form,
-        'absolute_url': absolute_url
+        'absolute_url': absolute_url,
+        'share': len(share)
     }
     return render(request, 'note_details.html', context)
 
@@ -149,6 +153,24 @@ def edit_note_details(request, pk):
             'tags': ','.join([i.slug for i in note.tags.all()]),
         }, instance=note)
         return render(request, 'modals/edit_note_modal.html', {'form': form})
+
+def share_note_details(request, pk):
+    note = get_object_or_404(Note, pk=pk)
+    if request.method == 'POST':
+        form = ShareNoteForm(request.POST)
+        if form.is_valid():
+            form_data = form.save(commit=False)
+            form_data.note = note
+            form_data.user_by = request.user
+            form_data.save()
+            form = ShareNoteForm()
+            messages.success(request, 'Share added successfully!')
+            return redirect('note_detail', slug=note.slug)
+    else:
+        form = ShareNoteForm(initial={
+            'note_title': note.note_title,
+        }, instance=note)
+        return render(request, 'modals/share_note_modal.html', {'form': form})
 
 def confirm_delete_note(request, pk):
     note = get_object_or_404(Note, pk=pk)
@@ -219,5 +241,4 @@ def get_all_notes_tags(request, slug):
         }
         return render(request, 'tags.html', context)
     else:
-        messages.error(request, 'You are not authenticated to perform this action')
         return redirect('notes')

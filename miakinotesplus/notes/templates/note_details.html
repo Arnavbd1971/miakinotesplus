@@ -16,11 +16,14 @@
                     </h3>
                     <span class="col-3">
                         <div class="float-right d-none d-md-block d-lg-block">
-                            <a class="open-modal" data-url="{% url 'note_details_edit' note_detail.id %}" style="text-decoration: none; color: white" data-toggle="tooltip" title="Edit Note">    
+                            <a class="open-modal" data-url="{% url 'note_details_share' note_detail.id %}" style="text-decoration: none; color: white" data-toggle="tooltip" title="Share Note">
+                                <span class="btn btn-warning" style="border-radius: 0;"><i class="fas fa-share"> </i></span>
+                            </a>
+                            <a class="open-modal" data-url="{% url 'note_details_edit' note_detail.id %}" style="text-decoration: none; color: white" data-toggle="tooltip" title="Edit Note">
                                 <span class="btn btn-primary" style="border-radius: 0;"><i class="far fa-edit"> </i></span>
                             </a>
-                            <a href="{% url 'note_as_pdf' note_detail.slug %}" style="text-decoration: none; color: white" data-toggle="tooltip" title="Download Note as PDF">    
-                                <span class="btn btn-primary" style="border-radius: 0;"><i class="fa fa-download"> </i></span>
+                            <a href="{% url 'note_as_pdf' note_detail.slug %}" style="text-decoration: none; color: white" data-toggle="tooltip" title="Download Note as PDF">
+                                <span class="btn btn-info" style="border-radius: 0;"><i class="fa fa-download"> </i></span>
                             </a>
                             <a class="open-delete-modal" data-url="{% url 'confirm_delete_note' note_detail.id %}" data-toggle="tooltip" title="Delete Note">
                                 <span class="btn btn-danger" style="border-radius: 0;"><i class="far fa-trash-alt"></i></span>
@@ -33,6 +36,9 @@
                                     <span><i class="fas fa-ellipsis-h"></i></span>
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="open-modal dropdown-item" data-url="{% url 'note_details_share' note_detail.id %}" style="text-decoration: none; color: white" data-toggle="tooltip" title="Share Note">    
+                                        <span class="btn btn-block btn-primary" style="border-radius: 0;"><i class="far fa-share"></i> Share</span>
+                                    </a>
                                     <a class="open-modal dropdown-item" data-url="{% url 'note_details_edit' note_detail.id %}" style="text-decoration: none; color: white" data-toggle="tooltip" title="Edit Note">    
                                         <span class="btn btn-block btn-primary" style="border-radius: 0;"><i class="far fa-edit"></i> Edit</span>
                                     </a>
@@ -53,6 +59,7 @@
                         <p style="color: gray; font-size: 15px;">
                             Last Updated: {{ note_detail.updated_at|naturaltime }} <i class="fa fa-info-circle" aria-hidden="true" data-html="true" data-toggle="tooltip" title="Updated at: {{ note_detail.updated_at}} <br> Created at: {{ note_detail.created_at }}"></i><br>
                         </p>
+                        <p>This note shared to other {{share}} users.</p>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <p class="float-right">
