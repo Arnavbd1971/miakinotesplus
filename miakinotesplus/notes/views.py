@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, Http404
-from .models import Note, AddNoteForm, Share, ShareNoteForm
+from .models import Note, AddNoteForm, Share, ShareNoteForm, Notification
 from django.contrib import messages
 import json, os
 from datetime import datetime, timedelta 
@@ -12,7 +12,7 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django.core.signing import BadSignature
 from taggit.models import Tag
-# from string import count
+from django.views.generic import View
 
 def all_notes(request):
     all_notes = Note.objects.all().order_by('-updated_at')
@@ -44,7 +44,6 @@ def home(request):
             'all_notes': all_notes,
             'add_note_form': form,
             'script_name': request.META['SCRIPT_NAME'],
-            'room_name' : "broadcast"
         }
         return render(request, 'notes.html', context)
     else:
@@ -114,7 +113,8 @@ def generate_pdf(request, slug):
 
 def get_note_details(request, slug):
     note = get_object_or_404(Note, slug=slug)
-    if note.user != request.user:
+    share = Share.objects.filter(user_to=request.user, note=note)
+    if note.user != request.user and share.count() < 1:
         messages.error(request, 'You are not authenticated to perform this action')
         return redirect('notes')
 
@@ -165,12 +165,11 @@ def share_note_details(request, pk):
             form_data.user_by = request.user
             form_data.save()
             form = ShareNoteForm()
+
             messages.success(request, 'Share added successfully!')
             return redirect('note_detail', slug=note.slug)
     else:
-        form = ShareNoteForm(initial={
-            'note_title': note.note_title,
-        }, instance=note)
+        form = ShareNoteForm(initial={'note_title': note.note_title,}, instance=note)
         return render(request, 'modals/share_note_modal.html', {'form': form})
 
 def confirm_delete_note(request, pk):
@@ -243,3 +242,11 @@ def get_all_notes_tags(request, slug):
         return render(request, 'tags.html', context)
     else:
         return redirect('notes')
+
+class ShowNotification(View):
+    def get(self, request, notification_pk, *args, **kwargs):
+        notification = Notification.objects.get(pk=notification_pk)
+        notification.user_has_seen = True
+        notification.save()
+
+        return redirect('note_detail', slug=notification.note.slug)

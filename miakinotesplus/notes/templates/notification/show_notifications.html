@@ -1,0 +1,13 @@
+{% load humanize %}
+<li class="nav-item dropdown">
+	<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:white">
+		<i class="fas fa-bell" data-toggle="tooltip" title="" data-original-title="Notification"></i> <span style="font-weight: bold;">{{ notifications.count }}</span>
+	</a>
+	<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+		{% for notification in notifications %}
+			{% if notification.notification_type == 1 %}
+				<a class="dropdown-item" href="{% url 'show_notification' notification.pk %}">@{{ notification.from_user }} shared a notes with you! <br><span style="color: #007bff;font-size: 13px;font-weight: bold;">{{ notification.date|naturaltime }}</span></a>
+			{% endif %}
+		{% endfor %}
+	</div>
+</li>

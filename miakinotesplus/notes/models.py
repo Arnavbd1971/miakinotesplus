@@ -95,6 +95,9 @@ class Share(models.Model):
                 self.slug = generate_unique_slug(Share, note)
         else:
             self.slug = generate_unique_slug(Share, note)
+
+        Notification.objects.create(notification_type=1, from_user=self.user_by, to_user=self.user_to, note=self.note)
+
         super(Share, self).save(*args, **kwargs)
 
 class ShareNoteForm(forms.ModelForm):
@@ -102,3 +105,13 @@ class ShareNoteForm(forms.ModelForm):
         model = Share
         fields = '__all__'
         exclude = ['note', 'user_by', 'slug', 'view_status']
+
+class Notification(models.Model):
+	# 1 = share,
+	notification_type = models.IntegerField()
+	to_user = models.ForeignKey(User, related_name='notification_to', on_delete=models.CASCADE, null=True)
+	from_user = models.ForeignKey(User, related_name='notification_from', on_delete=models.CASCADE, null=True)
+	note = models.ForeignKey('Note', on_delete=models.CASCADE, related_name='+', blank=True, null=True)
+	share = models.ForeignKey('Share', on_delete=models.CASCADE, related_name='+', blank=True, null=True)
+	date = models.DateTimeField(auto_now=True)
+	user_has_seen = models.BooleanField(default=False)

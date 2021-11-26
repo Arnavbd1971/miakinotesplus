@@ -1,6 +1,7 @@
 from django.urls import path
 from django.urls import include
 from . import views
+from .views import ShowNotification
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
@@ -15,5 +16,6 @@ urlpatterns = [
     path('notes/<slug:slug>/pdf/', login_required(views.generate_pdf), name='note_as_pdf'),
     path('notes/share/<str:signed_pk>/', views.get_shareable_link, name='share_notes'),
     path('tags/<slug:slug>/', views.get_all_notes_tags, name='get_all_notes_tags'),
-    path('', views.home, name='home')
+    path('', views.home, name='home'),
+    path('notification/notes/<int:notification_pk>/', ShowNotification.as_view(), name="show_notification")
 ]
