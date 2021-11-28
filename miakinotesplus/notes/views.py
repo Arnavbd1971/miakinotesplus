@@ -1,3 +1,4 @@
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, Http404
 from .models import Note, AddNoteForm, Share, ShareNoteForm, Notification
@@ -13,6 +14,10 @@ from xhtml2pdf import pisa
 from django.core.signing import BadSignature
 from taggit.models import Tag
 from django.views.generic import View
+
+from django.core.mail import send_mail
+from django.urls import reverse
+
 
 def all_notes(request):
     all_notes = Note.objects.all().order_by('-updated_at')
@@ -250,3 +255,21 @@ class ShowNotification(View):
         notification.save()
 
         return redirect('note_detail', slug=notification.note.slug)
+
+# cronjob function for send mail
+def cron_mail_sender():
+    notifications = Notification.objects.filter(user_has_seen=False, mail_sent_status=False).all()
+    if notifications:
+        for notification in notifications:
+            from_user_name = notification.from_user.first_name+' '+notification.from_user.last_name
+            subject = 'Note Unseen Notification.'
+            message = from_user_name+" shared a notes with you. You haven't seen yet."
+
+            send_mail(
+                subject,
+                message,
+                'avdoom01@gmail.com',
+                [notification.to_user.email],
+                fail_silently=False,
+            )
+            Notification.objects.filter(pk=notification.id).update(mail_sent_status=True)

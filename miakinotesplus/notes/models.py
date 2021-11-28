@@ -28,6 +28,7 @@ def generate_unique_slug(_class, field):
     return unique_slug
 
 
+
 class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     note_title = models.CharField(max_length=200)
@@ -115,3 +116,7 @@ class Notification(models.Model):
 	share = models.ForeignKey('Share', on_delete=models.CASCADE, related_name='+', blank=True, null=True)
 	date = models.DateTimeField(auto_now=True)
 	user_has_seen = models.BooleanField(default=False)
+	mail_sent_status = models.BooleanField(default=False)
+
+
+# mail_sent_status

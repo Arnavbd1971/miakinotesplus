@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'accounts',
     'notes',
     'ckeditor',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -77,6 +78,28 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = 'miakinotesplus.wsgi.application'
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+    },
+}
 
 
 # Database
@@ -151,4 +174,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 SUMMERNOTE_THEME = 'bs4'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+CRONJOBS = [
+    ('*/2 * * * *','notes.views.cron_mail_sender')
+]
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+# EMAIL_HOST_USER = 'avdoom01@gmail.com'
+EMAIL_HOST_USER = config('EMAIL_USER')
+# EMAIL_HOST_PASSWORD = 'vdfhkygecbspiylp'
+EMAIL_HOST_PASSWORD = config('EMAIL_PASS')
+EMAIL_USE_TLS = True
 
